@@ -1,5 +1,7 @@
-﻿using System;
+﻿using MyDiary.Model;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,9 +22,23 @@ namespace MyDiary
     /// </summary>
     public partial class MainWindow : Window
     {
+        public BindingList<Diary> diaryData;
+
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            diaryData = new BindingList<Diary>()
+            {
+                new Diary(){Task = "jkhgkljg"},
+                new Diary(){Task = "jkhgkl3453 p9038",
+                            IsDone = true}
+            };
+
+            MyDataGrid.ItemsSource = diaryData;
         }
     }
 }

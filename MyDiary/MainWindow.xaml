@@ -5,8 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyDiary"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MyDiary" Height="450" Width="800" Loaded="Window_Loaded">
     <Grid>
-        
+        <DataGrid x:Name="MyDataGrid" AutoGenerateColumns="False" FontSize="16" FontWeight="Bold" Margin="10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Path= Creation}" Header="CreationDate" IsReadOnly="True" Width="180"/>
+                <DataGridTextColumn Binding="{Binding Path= Task}" Header="Task" IsReadOnly="False" Width="180*"/>
+                <DataGridCheckBoxColumn Binding="{Binding Path= IsDone}" Header="Done" IsReadOnly="False" Width="70"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>
