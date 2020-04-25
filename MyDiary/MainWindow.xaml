@@ -9,9 +9,9 @@
     <Grid>
         <DataGrid x:Name="MyDataGrid" AutoGenerateColumns="False" FontSize="16" FontWeight="Bold" Margin="10">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Path= Creation}" Header="CreationDate" IsReadOnly="True" Width="180"/>
+                <DataGridTextColumn Binding="{Binding Path= Creation}" Header="CreationDate" IsReadOnly="True" Width="170"/>
                 <DataGridTextColumn Binding="{Binding Path= Task}" Header="Task" IsReadOnly="False" Width="180*"/>
-                <DataGridCheckBoxColumn Binding="{Binding Path= IsDone}" Header="Done" IsReadOnly="False" Width="70"/>
+                <DataGridCheckBoxColumn Binding="{Binding Path= IsDone, UpdateSourceTrigger=PropertyChanged}" Header="Done" IsReadOnly="False" Width="70"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

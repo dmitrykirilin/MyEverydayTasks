@@ -1,4 +1,5 @@
 ﻿using MyDiary.Model;
+using MyDiary.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,7 +23,9 @@ namespace MyDiary
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly string PATH = $"{Environment.CurrentDirectory}\\diaryData.json";
         public BindingList<Diary> diaryData;
+        private FileIOService fileIOService;
 
         public MainWindow()
         {
@@ -31,14 +34,43 @@ namespace MyDiary
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            diaryData = new BindingList<Diary>()
+            fileIOService = new FileIOService(PATH);
+
+            try
             {
-                new Diary(){Task = "jkhgkljg"},
-                new Diary(){Task = "jkhgkl3453 p9038",
-                            IsDone = true}
-            };
+                diaryData = fileIOService.LoadData();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                Close();
+            }
+            
+            //{
+            //    new Diary(){Task = "jkhgkljg"},
+            //    new Diary(){Task = "jkhgkl3453 p9038",
+            //                IsDone = true}
+            //};
 
             MyDataGrid.ItemsSource = diaryData;
+            diaryData.ListChanged += DiaryData_ListChanged;
+        }
+
+        private void DiaryData_ListChanged(object sender, ListChangedEventArgs e)
+        {
+            if (e.ListChangedType == ListChangedType.ItemAdded || e.ListChangedType == ListChangedType.ItemDeleted || e.ListChangedType == ListChangedType.ItemChanged)
+            {
+                try
+                {
+                    fileIOService.SaveData(sender as BindingList<Diary>);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    Close();
+                }
+            }
+            
         }
     }
 }
