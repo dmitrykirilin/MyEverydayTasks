@@ -3,6 +3,7 @@ using MyDiary.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,25 +27,31 @@ namespace MyDiary
         private readonly string PATH = $"{Environment.CurrentDirectory}\\diaryData.json";
         public BindingList<Diary> diaryData;
         private FileIOService fileIOService;
+        MyDbContext db;
 
         public MainWindow()
         {
             InitializeComponent();
+            db = new MyDbContext();
+            db.Notes.Load();
+            diaryData = db.Notes.Local.ToBindingList();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             fileIOService = new FileIOService(PATH);
+            
 
-            try
-            {
-                diaryData = fileIOService.LoadData();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                Close();
-            }
+            // Десериализация из JSON
+            //try
+            //{
+            //    diaryData = fileIOService.LoadData();
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message);
+            //    Close();
+            //}
             
             //{
             //    new Diary(){Task = "jkhgkljg"},
@@ -58,18 +65,38 @@ namespace MyDiary
 
         private void DiaryData_ListChanged(object sender, ListChangedEventArgs e)
         {
-            if (e.ListChangedType == ListChangedType.ItemAdded || e.ListChangedType == ListChangedType.ItemDeleted || e.ListChangedType == ListChangedType.ItemChanged)
+            if (e.ListChangedType == ListChangedType.ItemAdded)
             {
-                try
-                {
-                    fileIOService.SaveData(sender as BindingList<Diary>);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                    Close();
-                }
+                db.Notes.Add(new Diary() {
+                    Task = "sadfkgja ljaslfj",
+                    IsDone = true
+                });
+                db.SaveChanges();
             }
+            else if (e.ListChangedType == ListChangedType.ItemDeleted)
+            {
+                var product = db.Notes.Find(e.NewIndex + 1) as Diary;
+                db.Notes.Remove(product);
+                db.SaveChanges();
+            }
+            else if (e.ListChangedType == ListChangedType.ItemChanged)
+            {
+                var product = db.Notes.Find(e.OldIndex) as Diary;
+                product = diaryData[e.NewIndex];
+                db.SaveChanges();
+            }
+               
+                // Cериализация в JSON
+                //try
+                //{
+                //    fileIOService.SaveData(sender as BindingList<Diary>);
+                //}
+                //catch (Exception ex)
+                //{
+                //    MessageBox.Show(ex.Message);
+                //    Close();
+                //}
+            
             
         }
     }
