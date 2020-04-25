@@ -65,12 +65,10 @@ namespace MyDiary
 
         private void DiaryData_ListChanged(object sender, ListChangedEventArgs e)
         {
-            if (e.ListChangedType == ListChangedType.ItemAdded)
+            if (e.ListChangedType == ListChangedType.ItemChanged)
             {
-                db.Notes.Add(new Diary() {
-                    Task = "sadfkgja ljaslfj",
-                    IsDone = true
-                });
+                var product = db.Notes.Find(e.OldIndex) as Diary;
+                product = diaryData[e.NewIndex];
                 db.SaveChanges();
             }
             else if (e.ListChangedType == ListChangedType.ItemDeleted)
@@ -79,25 +77,24 @@ namespace MyDiary
                 db.Notes.Remove(product);
                 db.SaveChanges();
             }
-            else if (e.ListChangedType == ListChangedType.ItemChanged)
+            else if (e.ListChangedType == ListChangedType.ItemAdded)
             {
-                var product = db.Notes.Find(e.OldIndex) as Diary;
-                product = diaryData[e.NewIndex];
+                db.Notes.Add(diaryData[e.NewIndex]);
                 db.SaveChanges();
             }
-               
-                // Cериализация в JSON
-                //try
-                //{
-                //    fileIOService.SaveData(sender as BindingList<Diary>);
-                //}
-                //catch (Exception ex)
-                //{
-                //    MessageBox.Show(ex.Message);
-                //    Close();
-                //}
-            
-            
+
+            // Cериализация в JSON
+            //try
+            //{
+            //    fileIOService.SaveData(sender as BindingList<Diary>);
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message);
+            //    Close();
+            //}
+
+
         }
     }
 }
